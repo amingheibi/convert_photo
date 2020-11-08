@@ -56,8 +56,8 @@ def draw_voronoi(sites):
 def draw_delaunay(sites):
     tess = Delaunay(sites)
     tri = tess.vertices
-    plt.triplot(sites[:,0], sites[:,1], tri)
-    plt.plot(sites[:,0], sites[:,1], 'o')
+    plt.triplot(sites[:,0], sites[:,1], tri, linewidth=0.3, color='black')
+    # plt.plot(sites[:,0], sites[:,1], 'o')
     plt.show()
 
 def main():
@@ -66,7 +66,7 @@ def main():
     # img_ht.show()
     img_edges = img.filter(ImageFilter.FIND_EDGES)
     img_edges.show()
-    pixels, sites = extract_point(img_edges,(200,200,200))
+    pixels, sites = extract_point(img_edges,(20,20,20))
     img = Image.fromarray(pixels)
     img.show()
     draw_voronoi(sites)
