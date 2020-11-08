@@ -33,6 +33,7 @@ def extract_point(edges_img, threshold):
     '''threshold needs to be a tuple'''
     width, height = edges_img.size
     result_img = np.zeros((width-2, height-2))
+    voronoi_sites =[]
     points = list(edges_img.getdata())
 
     # I want to ignore the white box around the edge image
@@ -41,14 +42,13 @@ def extract_point(edges_img, threshold):
         for j, t in enumerate(p):
             if t > threshold:
                 # print('{} , {}'.format(i,j))
+                voronoi_sites.append([i,j])
                 result_img[i][j] = 255
-    return result_img
+    return result_img, voronoi_sites
 
 
-def draw_voronoi(pixels):
-    points = np.array([[0, 0], [0, 1], [0, 2], [1, 0], [1, 1], [1, 2],
-                   [2, 0], [2, 1], [2, 2]])
-    vor = Voronoi(points)
+def draw_voronoi(sites):
+    vor = Voronoi(sites)
     fig = voronoi_plot_2d(vor)
     plt.show()
 
@@ -59,10 +59,10 @@ def main():
     # img_ht.show()
     img_edges = img.filter(ImageFilter.FIND_EDGES)
     img_edges.show()
-    pixels = extract_point(img_edges,(100,100,100))
+    pixels, sites = extract_point(img_edges,(100,100,100))
     img = Image.fromarray(pixels)
     img.show()
-    draw_voronoi(pixels)
+    draw_voronoi(sites)
     
 
 
