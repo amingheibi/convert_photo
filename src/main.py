@@ -1,7 +1,8 @@
-from  PIL import Image, ImageDraw, ImageStat, ImageFilter
+from PIL import Image, ImageDraw, ImageStat, ImageFilter
 from pathlib import Path
 from scipy.spatial import Voronoi, voronoi_plot_2d
 import numpy as np
+import matplotlib.pyplot as plt
 
 def halftone(img, sample, scale=1):
     img_grey = img.convert('L')  # Converts to 8-bit pixels (gray).
@@ -44,6 +45,14 @@ def extract_point(edges_img, threshold):
     return result_img
 
 
+def draw_voronoi(pixels):
+    points = np.array([[0, 0], [0, 1], [0, 2], [1, 0], [1, 1], [1, 2],
+                   [2, 0], [2, 1], [2, 2]])
+    vor = Voronoi(points)
+    fig = voronoi_plot_2d(vor)
+    plt.show()
+
+
 def main():
     img = Image.open(Path('data/portrait.jpg'))
     # img_ht = halftone(img, 8, 1)
@@ -53,6 +62,7 @@ def main():
     pixels = extract_point(img_edges,(100,100,100))
     img = Image.fromarray(pixels)
     img.show()
+    draw_voronoi(pixels)
     
 
 
