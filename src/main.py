@@ -1,6 +1,7 @@
 from  PIL import Image, ImageDraw, ImageStat, ImageFilter
 from pathlib import Path
 from scipy.spatial import Voronoi, voronoi_plot_2d
+import numpy as np
 
 def halftone(img, sample, scale=1):
     img_grey = img.convert('L')  # Converts to 8-bit pixels (gray).
@@ -27,22 +28,32 @@ def halftone(img, sample, scale=1):
     return Image.merge('1', [bitmap])
 
 
-def extract_point(edges_img):
-    points = []
-    points = list(edges_img.getdata())
+def extract_point(edges_img, threshold):
+    '''threshold needs to be a tuple'''
     width, height = edges_img.size
+    result_img = np.zeros((width-2, height-2))
+    points = list(edges_img.getdata())
+
     # I want to ignore the white box around the edge image
     points = [points[(i * width)+1:((i + 1) * width)-1] for i in range(1,height-1)]
-    return points
+    for i, p in enumerate(points):
+        for j, t in enumerate(p):
+            if t > threshold:
+                # print('{} , {}'.format(i,j))
+                result_img[i][j] = 255
+    return result_img
 
 
 def main():
     img = Image.open(Path('data/portrait.jpg'))
-    img_ht = halftone(img, 8, 1)
-    img_ht.show()
+    # img_ht = halftone(img, 8, 1)
+    # img_ht.show()
     img_edges = img.filter(ImageFilter.FIND_EDGES)
-    extract_point(img_edges)
     img_edges.show()
+    pixels = extract_point(img_edges,(100,100,100))
+    img = Image.fromarray(pixels)
+    img.show()
+    
 
 
 if __name__ =="__main__":
