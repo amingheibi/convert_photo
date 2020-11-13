@@ -14,12 +14,12 @@ from scipy.ndimage.filters import convolve
 
 from scipy import misc
 import numpy as np
+import matplotlib.pyplot as plt
 
 
 class cannyEdgeDetector:
-    def __init__(self, imgs, sigma=1, kernel_size=5, weak_pixel=75, strong_pixel=255, lowthreshold=0.05, highthreshold=0.15):
-        self.imgs = imgs
-        self.imgs_final = []
+    def __init__(self, img, sigma=1, kernel_size=5, weak_pixel=75, strong_pixel=255, lowthreshold=0.05, highthreshold=0.15):
+        self.img = img
         self.img_smoothed = None
         self.gradientMat = None
         self.thetaMat = None
@@ -118,14 +118,20 @@ class cannyEdgeDetector:
         return img
 
     def detect(self):
-        for i, img in enumerate(self.imgs):
-            self.img_smoothed = convolve(
-                img, self.gaussian_kernel(self.kernel_size, self.sigma))
-            self.gradientMat, self.thetaMat = self.sobel_filters(
-                self.img_smoothed)
-            self.nonMaxImg = self.non_max_suppression(
-                self.gradientMat, self.thetaMat)
-            self.thresholdImg = self.threshold(self.nonMaxImg)
-            img_final = self.hysteresis(self.thresholdImg)
-            self.imgs_final.append(img_final)
-        return self.imgs_final
+        self.img_smoothed = convolve(
+            self.img, self.gaussian_kernel(self.kernel_size, self.sigma))
+        plt.imshow(self.img_smoothed)
+        plt.show()
+        self.gradientMat, self.thetaMat = self.sobel_filters(
+            self.img_smoothed)
+        plt.imshow(self.gradientMat)
+        plt.show()
+        self.nonMaxImg = self.non_max_suppression(
+            self.gradientMat, self.thetaMat)
+        plt.imshow(self.nonMaxImg)
+        plt.show()
+        self.thresholdImg = self.threshold(self.nonMaxImg)
+        plt.imshow(self.thresholdImg)
+        plt.show()
+        img_final = self.hysteresis(self.thresholdImg)
+        return img_final

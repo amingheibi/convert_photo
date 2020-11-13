@@ -3,6 +3,7 @@ from pathlib import Path
 from scipy.spatial import Voronoi, voronoi_plot_2d, Delaunay
 import numpy as np
 import matplotlib.pyplot as plt
+from canny import cannyEdgeDetector
 
 
 def halftone(img, sample, scale=1):
@@ -81,13 +82,23 @@ def main():
     img = Image.open(Path('data/portrait.jpg'))
     # img_ht = halftone(img, 8, 1)
     # img_ht.show()
-    img_edges = img.filter(ImageFilter.FIND_EDGES)
-    img_edges.show()
-    pixels, sites = extract_point(img_edges, (30, 30, 30))
-    img = Image.fromarray(pixels)
-    img.show()
-    draw_voronoi(sites)
-    draw_delaunay(sites)
+
+    # Laplacian edge detector
+    # img_edges = img.filter(ImageFilter.FIND_EDGES)
+    # img_edges.show()
+    
+    # Canny edge detector
+    detector = cannyEdgeDetector(np.asarray(img.convert('L')), sigma=1.4, 
+                                 kernel_size=5, lowthreshold=0.98, 
+                                 highthreshold=0.98)
+    img_canny_edges = detector.detect()
+    plt.imshow(img_canny_edges, 'gray')
+    plt.show()
+    # pixels, sites = extract_point(img_edges, (30, 30, 30))
+    # img = Image.fromarray(pixels)
+    # img.show()
+    # draw_voronoi(sites)
+    # draw_delaunay(sites)
 
 
 if __name__ == "__main__":
