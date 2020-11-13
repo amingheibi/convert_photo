@@ -42,7 +42,7 @@ def extract_point(edges_img, threshold):
         for j, t in enumerate(p):
             if t > threshold:
                 # print('{} , {}'.format(i,j))
-                voronoi_sites = np.append(voronoi_sites,[[i,j]] , axis=0)
+                voronoi_sites = np.append(voronoi_sites,[[j,i]] , axis=0)
                 result_img[i][j] = 255
     return result_img, voronoi_sites
 
@@ -50,6 +50,7 @@ def extract_point(edges_img, threshold):
 def draw_voronoi(sites):
     vor = Voronoi(sites)
     voronoi_plot_2d(vor, show_vertices = False, show_points = False)
+    plt.gca().invert_yaxis() # to reverse y axis to show image properly
     plt.show()
 
 
@@ -57,6 +58,7 @@ def draw_delaunay(sites):
     tess = Delaunay(sites)
     tri = tess.vertices
     plt.triplot(sites[:,0], sites[:,1], tri, linewidth=0.3, color='black')
+    plt.gca().invert_yaxis() # to reverse y axis to show image properly
     # plt.plot(sites[:,0], sites[:,1], 'o')
     plt.show()
 
