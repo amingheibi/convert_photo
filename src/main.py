@@ -4,6 +4,7 @@ from scipy.spatial import Voronoi, voronoi_plot_2d, Delaunay
 import numpy as np
 import matplotlib.pyplot as plt
 from canny import cannyEdgeDetector
+import sys
 
 
 def halftone(img, sample, scale=1):
@@ -78,16 +79,7 @@ def draw_delaunay(sites, draw_sites=False):
                      transparent=True, pad_inches=0))
 
 
-def main():
-    img = Image.open(Path('data/portrait.jpg'))
-    # img_ht = halftone(img, 8, 1)
-    # img_ht.show()
-
-    # Laplacian edge detector
-    # img_edges = img.filter(ImageFilter.FIND_EDGES)
-    # img_edges.show()
-    
-    # Canny edge detector
+def canny_based_approach(img):
     gray_img = np.asarray(img.convert('L'))
     plt.imshow(gray_img, 'gray')
     plt.show()
@@ -97,11 +89,34 @@ def main():
     img_canny_edges = detector.detect()
     plt.imshow(img_canny_edges, 'gray')
     plt.show()
-    # pixels, sites = extract_point(img_edges, (30, 30, 30))
-    # img = Image.fromarray(pixels)
-    # img.show()
-    # draw_voronoi(sites)
-    # draw_delaunay(sites)
+
+
+def laplacian_based_approach(img):
+    # img_ht = halftone(img, 8, 1)
+    # img_ht.show()
+
+    # Laplacian edge detector
+    img_edges = img.filter(ImageFilter.FIND_EDGES)
+    img_edges.show()
+    pixels, sites = extract_point(img_edges, (30, 30, 30))
+    img = Image.fromarray(pixels)
+    img.show()
+    draw_voronoi(sites)
+    draw_delaunay(sites)
+
+
+def main():
+    file_name = sys.argv[1] # give file name as an argument
+    edge_detection = sys.argv[2] # canny or laplace
+    img = Image.open(Path(file_name)) # 'data/portrait.jpg'
+    if edge_detection == 'canny':
+        canny_based_approach(img)
+    elif edge_detection == 'laplace':
+        laplacian_based_approach(img)
+    else:
+        print('''Please select a valid option: 'canny' or 'laplace' ''')
+
+
 
 
 if __name__ == "__main__":
