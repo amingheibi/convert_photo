@@ -88,9 +88,12 @@ def main():
     # img_edges.show()
     
     # Canny edge detector
-    detector = cannyEdgeDetector(np.asarray(img.convert('L')), sigma=1.4, 
-                                 kernel_size=5, lowthreshold=0.98, 
-                                 highthreshold=0.98)
+    gray_img = np.asarray(img.convert('L'))
+    plt.imshow(gray_img, 'gray')
+    plt.show()
+    detector = cannyEdgeDetector(gray_img, sigma=6, 
+                                 kernel_size=5, lowthreshold=0.8, 
+                                 highthreshold=0.8)
     img_canny_edges = detector.detect()
     plt.imshow(img_canny_edges, 'gray')
     plt.show()

@@ -46,7 +46,9 @@ class cannyEdgeDetector:
         Ix = ndimage.filters.convolve(img, Kx)
         Iy = ndimage.filters.convolve(img, Ky)
         G = np.hypot(Ix, Iy)
-        G = G / G.max() * 255
+        plt.imshow(G.astype(int), 'gray')
+        plt.show()
+        # G = G / G.max() * 255
         theta = np.arctan2(Iy, Ix)
         return (G, theta)
 
@@ -120,18 +122,18 @@ class cannyEdgeDetector:
     def detect(self):
         self.img_smoothed = convolve(
             self.img, self.gaussian_kernel(self.kernel_size, self.sigma))
-        plt.imshow(self.img_smoothed)
+        plt.imshow(self.img_smoothed, 'gray')
         plt.show()
         self.gradientMat, self.thetaMat = self.sobel_filters(
             self.img_smoothed)
-        plt.imshow(self.gradientMat)
+        plt.imshow(self.gradientMat.astype(int), 'gray')
         plt.show()
         self.nonMaxImg = self.non_max_suppression(
             self.gradientMat, self.thetaMat)
-        plt.imshow(self.nonMaxImg)
+        plt.imshow(self.nonMaxImg, 'gray')
         plt.show()
         self.thresholdImg = self.threshold(self.nonMaxImg)
-        plt.imshow(self.thresholdImg)
+        plt.imshow(self.thresholdImg, 'gray')
         plt.show()
         img_final = self.hysteresis(self.thresholdImg)
         return img_final
