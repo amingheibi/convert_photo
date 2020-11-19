@@ -47,7 +47,7 @@ def extract_point(edges_img, threshold):
             if t > threshold:
                 # print('{} , {}'.format(i,j))
                 voronoi_sites = np.append(voronoi_sites, [[j, i]], axis=0)
-                result_img[j][i] = 255 # j is represeting height
+                result_img[j][i] = 255  # j is represeting height
     return result_img, voronoi_sites
 
 
@@ -59,8 +59,8 @@ def draw_voronoi(sites):
     fig.set_size_inches(8, 8)
     plt.axis('off')
     plt.show()
-    fig.savefig(Path('data/Voronoi.png', bbox_inches='tight' ,
-                transparent=True, pad_inches=0))
+    fig.savefig(Path('data/Voronoi.png', bbox_inches='tight',
+                     transparent=True, pad_inches=0))
 
 
 def draw_delaunay(sites, draw_sites=False):
@@ -79,22 +79,19 @@ def draw_delaunay(sites, draw_sites=False):
                      transparent=True, pad_inches=0))
 
 
-def canny_based_approach(img):
+def canny_based_approach(img, output_type, output_name):
     gray_img = np.asarray(img.convert('L'))
     plt.imshow(gray_img, 'gray')
     plt.show()
-    detector = cannyEdgeDetector(gray_img, sigma=6, 
-                                 kernel_size=5, lowthreshold=0.8, 
+    detector = cannyEdgeDetector(gray_img, sigma=6,
+                                 kernel_size=5, lowthreshold=0.8,
                                  highthreshold=0.8)
     img_canny_edges = detector.detect()
     plt.imshow(img_canny_edges, 'gray')
     plt.show()
 
 
-def laplacian_based_approach(img):
-    # img_ht = halftone(img, 8, 1)
-    # img_ht.show()
-
+def laplacian_based_approach(img, output_type, output_name):
     # Laplacian edge detector
     img_edges = img.filter(ImageFilter.FIND_EDGES)
     img_edges.show()
@@ -105,18 +102,30 @@ def laplacian_based_approach(img):
     draw_delaunay(sites)
 
 
+def halftoning(img, output_name):
+    img_ht = halftone(img, 8, 1)
+    img_ht.show()
+    # Save file
+
+
 def main():
-    file_name = sys.argv[1] # give file name as an argument
-    edge_detection = sys.argv[2] # canny or laplace
-    img = Image.open(Path(file_name)) # 'data/portrait.jpg'
-    if edge_detection == 'canny':
-        canny_based_approach(img)
-    elif edge_detection == 'laplace':
-        laplacian_based_approach(img)
+    file_name = sys.argv[1]  # give file name as an argument
+    output_name = sys.argv[2]
+    edge_detection = sys.argv[3]  # canny or laplace
+    output_type = sys.argv[4]
+    img = Image.open(Path(file_name))  # e.g., 'data/portrait.jpg'
+    if output_type not in ['voronoi', 'delaunay', 'halftone']:
+        print(
+            '''Please select a valid output type: 'voronoi' or 'delaunay' or 'halftone' ''')
+    elif output_type == 'halftone':
+        halftoning(img, output_name)
     else:
-        print('''Please select a valid option: 'canny' or 'laplace' ''')
-
-
+        if edge_detection == 'canny':
+            canny_based_approach(img, output_type, output_name)
+        elif edge_detection == 'laplace':
+            laplacian_based_approach(img, output_type, output_name)
+        else:
+            print('''Please select a valid option: 'canny' or 'laplace' ''')
 
 
 if __name__ == "__main__":
