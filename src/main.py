@@ -51,7 +51,7 @@ def extract_point(edges_img, threshold):
     return result_img, voronoi_sites
 
 
-def draw_voronoi(sites):
+def draw_voronoi(sites, output_name):
     vor = Voronoi(sites)
     voronoi_plot_2d(vor, show_vertices=False, show_points=False)
     plt.gca().invert_yaxis()  # to reverse y axis to show image properly
@@ -59,11 +59,11 @@ def draw_voronoi(sites):
     fig.set_size_inches(8, 8)
     plt.axis('off')
     plt.show()
-    fig.savefig(Path('data/Voronoi.png', bbox_inches='tight',
-                     transparent=True, pad_inches=0))
+    fig.savefig(output_name, bbox_inches='tight',
+                     transparent=True, pad_inches=0)
 
 
-def draw_delaunay(sites, draw_sites=False):
+def draw_delaunay(sites, output_name, draw_sites=False):
     tess = Delaunay(sites)
     tri = tess.vertices
     fig = plt.gcf()
@@ -75,8 +75,8 @@ def draw_delaunay(sites, draw_sites=False):
     # plt.show()
     plt.axis('off')
     plt.show()
-    fig.savefig(Path('data/delaunaye.png', bbox_inches='tight',
-                     transparent=True, pad_inches=0))
+    fig.savefig(output_name, bbox_inches='tight',
+                     transparent=True, pad_inches=0)
 
 
 def canny_based_approach(img, output_type, output_name):
@@ -89,6 +89,13 @@ def canny_based_approach(img, output_type, output_name):
     img_canny_edges = detector.detect()
     plt.imshow(img_canny_edges, 'gray')
     plt.show()
+    # pixels, sites = extract_point(img_edges, (30, 30, 30))
+    # img = Image.fromarray(pixels)
+    # img.show()
+    # if output_type == 'voronoi':
+    #     draw_voronoi(sites, output_name)
+    # elif output_type == 'delaunay':
+    #     draw_delaunay(sites, output_name)
 
 
 def laplacian_based_approach(img, output_type, output_name):
@@ -98,8 +105,10 @@ def laplacian_based_approach(img, output_type, output_name):
     pixels, sites = extract_point(img_edges, (30, 30, 30))
     img = Image.fromarray(pixels)
     img.show()
-    draw_voronoi(sites)
-    draw_delaunay(sites)
+    if output_type == 'voronoi':
+        draw_voronoi(sites, output_name)
+    elif output_type == 'delaunay':
+        draw_delaunay(sites, output_name)
 
 
 def halftoning(img, output_name):
