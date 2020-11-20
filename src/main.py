@@ -57,7 +57,7 @@ def draw_voronoi(sites, output_name):
     plt.axis('off')
     plt.show()
     fig.savefig(output_name, bbox_inches='tight',
-                     transparent=True, pad_inches=0)
+                transparent=True, pad_inches=0)
 
 
 def draw_delaunay(sites, output_name, draw_sites=False):
@@ -69,26 +69,19 @@ def draw_delaunay(sites, output_name, draw_sites=False):
     if draw_sites == True:
         plt.plot(sites[:, 0], sites[:, 1], 'o')
     plt.gca().invert_yaxis()  # to reverse y axis to show image properly
-    # plt.show()
     plt.axis('off')
     plt.show()
     fig.savefig(output_name, bbox_inches='tight',
-                     transparent=True, pad_inches=0)
+                transparent=True, pad_inches=0)
 
 
 def canny_based_approach(img, output_type, output_name, width, height):
     gray_img = np.asarray(img.convert('L'))
-    plt.imshow(gray_img, 'gray')
-    plt.show()
     detector = cannyEdgeDetector(gray_img, sigma=6,
                                  kernel_size=5, lowthreshold=0.8,
                                  highthreshold=0.8)
     img_canny_edges = detector.detect()
-    plt.imshow(img_canny_edges, 'gray')
-    plt.show()
     pixels, sites = extract_point(img_canny_edges, 10, width, height)
-    img = Image.fromarray(pixels)
-    img.show()
     if output_type == 'voronoi':
         draw_voronoi(sites, output_name)
     elif output_type == 'delaunay':
@@ -98,13 +91,11 @@ def canny_based_approach(img, output_type, output_name, width, height):
 def laplacian_based_approach(img, output_type, output_name, width, height):
     # Laplacian edge detector
     img_edges = img.filter(ImageFilter.FIND_EDGES)
-    img_edges.show()
     points = list(img_edges.getdata())
     points = [points[(i * width)+1:((i + 1) * width)-1]
               for i in range(1, height-1)]
     pixels, sites = extract_point(points, (30, 30, 30), width, height)
     img = Image.fromarray(pixels)
-    img.show()
     if output_type == 'voronoi':
         draw_voronoi(sites, output_name)
     elif output_type == 'delaunay':
@@ -133,7 +124,8 @@ def main():
         if edge_detection == 'canny':
             canny_based_approach(img, output_type, output_name, width, height)
         elif edge_detection == 'laplace':
-            laplacian_based_approach(img, output_type, output_name, width, height)
+            laplacian_based_approach(
+                img, output_type, output_name, width, height)
         else:
             print('''Please select a valid option: 'canny' or 'laplace' ''')
 
