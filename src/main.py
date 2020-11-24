@@ -105,7 +105,7 @@ def laplacian_based_approach(img, output_type, output_name, width, height):
 def halftoning(img, output_name, width, height):
     img_ht = halftone(img, 8, width, height)
     img_ht.show()
-    # Save file
+    # TODO: Save file
 
 
 def main():
@@ -128,6 +128,8 @@ def main():
                 img, output_type, output_name, width, height)
         else:
             print('''Please select a valid option: 'canny' or 'laplace' ''')
+    # TODO: Plot the original file and the result in a figure
+    # TODO: Write a readme file
 
 
 if __name__ == "__main__":
