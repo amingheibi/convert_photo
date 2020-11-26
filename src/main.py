@@ -102,34 +102,46 @@ def laplacian_based_approach(img, output_type, output_name, width, height):
         draw_delaunay(sites, output_name)
 
 
-def halftoning(img, output_name, width, height):
+def halftoning(img, width, height):
     img_ht = halftone(img, 8, width, height)
-    img_ht.show()
-    # TODO: Save file
+    return img_ht
 
 
 def main():
     file_name = sys.argv[1]  # give file name as an argument
     output_name = sys.argv[2]
-    edge_detection = sys.argv[3]  # canny or laplace
-    output_type = sys.argv[4]
+    output_type = sys.argv[3]
     img = Image.open(Path(file_name))  # e.g., 'data/portrait.jpg'
     width, height = img.size
     if output_type not in ['voronoi', 'delaunay', 'halftone']:
         print(
             '''Please select a valid output type: 'voronoi' or 'delaunay' or 'halftone' ''')
     elif output_type == 'halftone':
-        halftoning(img, output_name, width, height)
+        result = halftoning(img, width, height)
+        result.save(output_name + '.png','PNG')
     else:
-        if edge_detection == 'canny':
-            canny_based_approach(img, output_type, output_name, width, height)
-        elif edge_detection == 'laplace':
-            laplacian_based_approach(
-                img, output_type, output_name, width, height)
-        else:
-            print('''Please select a valid option: 'canny' or 'laplace' ''')
-    # TODO: Plot the original file and the result in a figure
-    # TODO: Write a readme file
+        try:
+            edge_detection = sys.argv[4]  # canny or laplace
+            if edge_detection == 'canny':
+                canny_based_approach(img, output_type, output_name, width, height)
+            elif edge_detection == 'laplace':
+                laplacian_based_approach(
+                    img, output_type, output_name, width, height)
+            else:
+                print('''Please select a valid option: 'canny' or 'laplace' ''')
+        except:
+            print("Please use this way: input_file output_file function edge_detection")
+    # plot the original file and result besides each other
+    plt.subplot(121)
+    plt.imshow(img)
+    plt.axis('off')
+    plt.subplot(122)
+    plt.imshow(result)
+    plt.axis('off')
+    plt.show()
+
+    # TODO: write a readme file
+    
 
 
 if __name__ == "__main__":
