@@ -85,7 +85,7 @@ def canny_based_approach(img, output_type, width, height):
     return fig
 
 
-def laplacian_based_approach(img, output_type, output_name, width, height):
+def laplacian_based_approach(img, output_type, width, height):
     # Laplacian edge detector
     img_edges = img.filter(ImageFilter.FIND_EDGES)
     points = list(img_edges.getdata())
@@ -94,9 +94,10 @@ def laplacian_based_approach(img, output_type, output_name, width, height):
     pixels, sites = extract_point(points, (30, 30, 30), width, height)
     img = Image.fromarray(pixels)
     if output_type == 'voronoi':
-        draw_voronoi(sites, output_name)
+        fig = draw_voronoi(sites)
     elif output_type == 'delaunay':
-        draw_delaunay(sites, output_name)
+        fig = draw_delaunay(sites)
+    return fig
 
 
 def halftoning(img, width, height):
@@ -122,8 +123,8 @@ def main():
             if edge_detection == 'canny':
                 fig = canny_based_approach(img, output_type, width, height)
             elif edge_detection == 'laplace':
-                laplacian_based_approach(
-                    img, output_type, output_name, width, height)
+                fig = laplacian_based_approach(
+                    img, output_type, width, height)
             else:
                 print('''Please select a valid option: 'canny' or 'laplace' ''')
         except:
