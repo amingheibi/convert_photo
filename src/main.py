@@ -48,19 +48,14 @@ def extract_point(points, threshold, width, height):
     return result_img, voronoi_sites
 
 
-def draw_voronoi(sites, output_name):
+def draw_voronoi(sites):
     vor = Voronoi(sites)
-    voronoi_plot_2d(vor, show_vertices=False, show_points=False)
-    plt.gca().invert_yaxis()  # to reverse y axis to show image properly
-    fig = plt.gcf()
-    fig.set_size_inches(8, 8)
-    plt.axis('off')
-    plt.show()
-    fig.savefig(output_name, bbox_inches='tight',
-                transparent=True, pad_inches=0)
+    fig = voronoi_plot_2d(vor, show_vertices=False, show_points=False)
+    return fig
 
 
-def draw_delaunay(sites, output_name, draw_sites=False):
+
+def draw_delaunay(sites, draw_sites=False):
     tess = Delaunay(sites)
     tri = tess.vertices
     fig = plt.gcf()
@@ -68,14 +63,15 @@ def draw_delaunay(sites, output_name, draw_sites=False):
     plt.triplot(sites[:, 0], sites[:, 1], tri, linewidth=0.3, color='black')
     if draw_sites == True:
         plt.plot(sites[:, 0], sites[:, 1], 'o')
-    plt.gca().invert_yaxis()  # to reverse y axis to show image properly
-    plt.axis('off')
-    plt.show()
-    fig.savefig(output_name, bbox_inches='tight',
-                transparent=True, pad_inches=0)
+    return fig 
+    # plt.gca().invert_yaxis()  # to reverse y axis to show image properly
+    # plt.axis('off')
+    # plt.show()
+    # fig.savefig(output_name, bbox_inches='tight',
+    #             transparent=True, pad_inches=0)
 
 
-def canny_based_approach(img, output_type, output_name, width, height):
+def canny_based_approach(img, output_type, width, height):
     gray_img = np.asarray(img.convert('L'))
     detector = cannyEdgeDetector(gray_img, sigma=6,
                                  kernel_size=5, lowthreshold=0.8,
@@ -83,9 +79,10 @@ def canny_based_approach(img, output_type, output_name, width, height):
     img_canny_edges = detector.detect()
     pixels, sites = extract_point(img_canny_edges, 10, width, height)
     if output_type == 'voronoi':
-        draw_voronoi(sites, output_name)
+        fig = draw_voronoi(sites)
     elif output_type == 'delaunay':
-        draw_delaunay(sites, output_name)
+        fig = draw_delaunay(sites)
+    return fig
 
 
 def laplacian_based_approach(img, output_type, output_name, width, height):
@@ -123,7 +120,7 @@ def main():
         try:
             edge_detection = sys.argv[4]  # canny or laplace
             if edge_detection == 'canny':
-                canny_based_approach(img, output_type, output_name, width, height)
+                fig = canny_based_approach(img, output_type, width, height)
             elif edge_detection == 'laplace':
                 laplacian_based_approach(
                     img, output_type, output_name, width, height)
@@ -131,6 +128,12 @@ def main():
                 print('''Please select a valid option: 'canny' or 'laplace' ''')
         except:
             print("Please use this way: input_file output_file function edge_detection")
+        # save output file
+        plt.gca().invert_yaxis()  # to reverse y axis to show image properly
+        fig.set_size_inches(8, 8)
+        plt.axis('off')
+        fig.savefig(output_name, bbox_inches='tight',
+                    transparent=True, pad_inches=0)
     # plot the original file and result besides each other
     plt.subplot(121)
     plt.imshow(img)
