@@ -50,7 +50,9 @@ def extract_point(points, threshold, width, height):
 
 def draw_voronoi(sites):
     vor = Voronoi(sites)
-    fig = voronoi_plot_2d(vor, show_vertices=False, show_points=False)
+    fig, ax = plt.subplots(1,2, figsize=(8,16))
+    voronoi_plot_2d(vor, ax=ax[1], show_vertices=False, show_points=False)
+    ax[1].set_aspect('equal')
     return fig
 
 
@@ -58,17 +60,12 @@ def draw_voronoi(sites):
 def draw_delaunay(sites, draw_sites=False):
     tess = Delaunay(sites)
     tri = tess.vertices
-    fig = plt.gcf()
-    fig.set_size_inches(8, 8)
-    plt.triplot(sites[:, 0], sites[:, 1], tri, linewidth=0.3, color='black')
+    fig , ax = plt.subplots(1,2)
+    ax[1].triplot(sites[:, 0], sites[:, 1], tri, linewidth=0.3, color='black')
     if draw_sites == True:
-        plt.plot(sites[:, 0], sites[:, 1], 'o')
+        ax[1].plot(sites[:, 0], sites[:, 1], 'o')
+    ax[1].set_aspect('equal')
     return fig 
-    # plt.gca().invert_yaxis()  # to reverse y axis to show image properly
-    # plt.axis('off')
-    # plt.show()
-    # fig.savefig(output_name, bbox_inches='tight',
-    #             transparent=True, pad_inches=0)
 
 
 def canny_based_approach(img, output_type, width, height):
@@ -117,6 +114,9 @@ def main():
     elif output_type == 'halftone':
         result = halftoning(img, width, height)
         result.save(output_name + '.png','PNG')
+        plt.subplot(122)
+        plt.imshow(result)
+        plt.axis('off')
     else:
         try:
             edge_detection = sys.argv[4]  # canny or laplace
@@ -127,7 +127,8 @@ def main():
                     img, output_type, width, height)
             else:
                 print('''Please select a valid option: 'canny' or 'laplace' ''')
-        except:
+        except Exception as err:
+            print(err.values)
             print("Please use this way: input_file output_file function edge_detection")
         # save output file
         plt.gca().invert_yaxis()  # to reverse y axis to show image properly
@@ -139,12 +140,10 @@ def main():
     plt.subplot(121)
     plt.imshow(img)
     plt.axis('off')
-    plt.subplot(122)
-    plt.imshow(result)
-    plt.axis('off')
     plt.show()
 
     # TODO: write a readme file
+    # TODO: add a link to repo on the output
     
 
 
