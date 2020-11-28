@@ -50,22 +50,21 @@ def extract_point(points, threshold, width, height):
 
 def draw_voronoi(sites):
     vor = Voronoi(sites)
-    fig, ax = plt.subplots(1,2, figsize=(8,16))
+    fig, ax = plt.subplots(1, 2, figsize=(8, 16))
     voronoi_plot_2d(vor, ax=ax[1], show_vertices=False, show_points=False)
     ax[1].set_aspect('equal')
     return fig
 
 
-
 def draw_delaunay(sites, draw_sites=False):
     tess = Delaunay(sites)
     tri = tess.vertices
-    fig , ax = plt.subplots(1,2)
+    fig, ax = plt.subplots(1, 2)
     ax[1].triplot(sites[:, 0], sites[:, 1], tri, linewidth=0.3, color='black')
     if draw_sites == True:
         ax[1].plot(sites[:, 0], sites[:, 1], 'o')
     ax[1].set_aspect('equal')
-    return fig 
+    return fig
 
 
 def canny_based_approach(img, output_type, width, height):
@@ -113,10 +112,9 @@ def main():
             '''Please select a valid output type: 'voronoi' or 'delaunay' or 'halftone' ''')
     elif output_type == 'halftone':
         result = halftoning(img, width, height)
-        result.save(output_name + '.png','PNG')
-        plt.subplot(122)
-        plt.imshow(result)
-        plt.axis('off')
+        fig, ax = plt.subplots(1,2)
+        ax[1].imshow(result)
+        ax[1].axis('off')
     else:
         try:
             edge_detection = sys.argv[4]  # canny or laplace
@@ -134,17 +132,19 @@ def main():
         plt.gca().invert_yaxis()  # to reverse y axis to show image properly
         fig.set_size_inches(8, 8)
         plt.axis('off')
-        fig.savefig(output_name, bbox_inches='tight',
-                    transparent=True, pad_inches=0)
     # plot the original file and result besides each other
+    plt.text(100, 450, "github.com/amingheibi/convert_photo", size=7,
+             ha="center", va="center",
+             bbox=dict(boxstyle="round", ec='r', fc='w')
+             )
     plt.subplot(121)
     plt.imshow(img)
     plt.axis('off')
     plt.show()
+    fig.savefig(output_name, bbox_inches='tight',
+                transparent=True, pad_inches=0)
 
     # TODO: write a readme file
-    # TODO: add a link to repo on the output
-    
 
 
 if __name__ == "__main__":
