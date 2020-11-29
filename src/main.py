@@ -144,8 +144,6 @@ def main():
     fig.savefig(output_name, bbox_inches='tight',
                 transparent=True, pad_inches=0)
 
-    # TODO: write a readme file
-
 
 if __name__ == "__main__":
     main()

@@ -1,6 +1,16 @@
-# Convert a photo to a patters
+# Convert a photo to a pattern
 ## Delaunay, Voronoi and Halftone
 This script converts a photo to a pattern by extracting pixels of edges. Hence, edge extractors are required. I've used two edge extractors, Laplace and Canny. The final output of the Laplace edge detector was more promising despite being much simpler. The script can produce Delaunay Triangulation, Voronoi Diagram, and Halftoning pattern.
+
+# Usage
+You can use this code in console as follows:
+```
+python3 src/main.py [input_file] [output_file] [pattern: delaunay, voronoi, halftone] [edge_detector: laplace, canny]
+```
+For exmaple, the following code will use Laplace edge detector and produces Delaunay tringulation.
+```
+python3 src/main.py 'data/1.jpg' 'data/1_delaunay_laplace' delaunay laplace
+```
 
 # Some Samples
 ![Delaunay tringulation on Laplace output](data/1_delaunay_laplace.png?raw=true "Delaunay tringulation on Laplace output")
