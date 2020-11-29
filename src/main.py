@@ -133,7 +133,7 @@ def main():
         fig.set_size_inches(8, 8)
         plt.axis('off')
     # plot the original file and result besides each other
-    plt.text(100, 450, "github.com/amingheibi/convert_photo", size=7,
+    plt.text(200, 450, "github.com/amingheibi/convert_photo", size=15,
              ha="center", va="center",
              bbox=dict(boxstyle="round", ec='r', fc='w')
              )
